@@ -55,6 +55,7 @@ add_executable(Noise
         NoiseTypes/ExperimentalNoise.cpp
         NoiseTypes/Splatter.cpp
         NoiseTypes/Wood.cpp
+        NoiseTypes/PrimeGradient.cpp
         Fractal.cpp
         Noise.cpp
         HashFunctions.cpp
