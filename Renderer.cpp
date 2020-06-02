@@ -252,6 +252,8 @@ int Renderer::updateImguiText() {
         imguiNoiseType = "Noise Type: Perlin (splatter)";
     } else if (this->noiseType == 6) {
         imguiNoiseType = "Noise Type: Perlin (wood)";
+    } else if (this->noiseType == 7) {
+        imguiNoiseType = "Noise Type: Primed Gradient";
     } else {
         // TODO: Throw error
     }
