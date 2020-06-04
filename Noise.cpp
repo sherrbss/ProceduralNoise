@@ -166,8 +166,8 @@ std::vector<Noise::Point> Noise::generatePrimedGradient(int pairingFunction, int
         for (int y = 0; y < height; ++y) {
 
             // Generate noise value - f(x, y, z)
-            //noise = noiseGenerator -> noise(float(x) * invWidth, float(y) * invHeight, 0.72f);
-            noise = noiseGenerator -> noise(float(x) * invWidth, float(y) * invHeight, 0.5f);
+            noise = noiseGenerator -> noise(float(x) * invWidth, float(y) * invHeight, 1.0f);
+            //noise = noiseGenerator -> noise(float(x) * invWidth, float(y) * invHeight, 0.5f);
 
             /// Warping domain
             /*

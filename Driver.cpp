@@ -41,8 +41,8 @@ using namespace std;
 #define SAVE_NOISE_IMAGE 1		    // Save noise image on
 
 /// Application Configuration
-//#define APPLICATION_TYPE 0        // Apply texture to vase (or other object)
-#define APPLICATION_TYPE 1          // Procedural landscape model
+#define APPLICATION_TYPE 0        // Apply texture to vase (or other object)
+//#define APPLICATION_TYPE 1          // Procedural landscape model
 
 /// Analysis Mode Configuration
 //#define ANALYSIS 0		        // Analysis mode off

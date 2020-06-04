@@ -92,7 +92,7 @@ float Fractal::noise(float xCoord, float yCoord, float zCoord) {
             sum = this->valueWoodSource->noise(xCoord * freq, yCoord * freq, zCoord * freq) * amp;
 
             break;
-        } else if (this->noiseType == 7) {    // Prime Gradient (wood)
+        } else if (this->noiseType == 7) {    // Prime Gradient
             sum += this->primeSource->noise(xCoord * freq, yCoord * freq, zCoord * freq) * amp;
 
             freq *= this->lacunarity;

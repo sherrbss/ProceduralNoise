@@ -17,9 +17,12 @@ Mesh::~Mesh() {}
 void Mesh::generateFileMesh() {
 
     // File to Mesh
-    std::string filename = "../res/meshes/ModernVase.obj";
-    //std::string filename = "../res/meshes/Basketball_Triangulated.obj";
-    //std::string filename = "../res/meshes/untitled.obj"; // tree
+    std::string filename = "../res/meshes/ModernVase.obj";                          // Vase
+    //std::string filename = "../res/meshes/Basketball_Triangulated.obj";           // Basketball
+    //std::string filename = "../res/meshes/untitled.obj";                          // Tree
+    //std::string filename = "../res/meshes/chair.obj";                             // Chair
+    //std::string filename = "../res/meshes/Hat_Triangulated.obj";                  // Hat
+    //std::string filename = "../res/meshes/Sphere_Triangulated.obj";               // Sphere
 
     std::vector<GLfloat> pVertices;
     std::vector<GLuint> pIndices;

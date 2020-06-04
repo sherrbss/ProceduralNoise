@@ -121,24 +121,24 @@ void ImageOutput::saveBMP(std::vector<Noise::Point> points, int writeBMP, int wi
 
 
                     /// Interpolating Water Textures [BL]
-                    /**/
+                    /*
                     glm::vec3 startColor = glm::vec3(4, 78, 74);
                     glm::vec3 endColor = glm::vec3(228, 222, 201);
                     float x = rgb[i][j] / 255.0f;
                     float r = ((endColor.x - startColor.x) * x) + startColor.x;
                     float g = ((endColor.y - startColor.y) * x) + startColor.y;
                     float b = ((endColor.z - startColor.z) * x) + startColor.z;
-
+                    */
 
                     /// Interpolating Basketball [BSK]
-                    /*
+                    /**/
                     glm::vec3 startColor = glm::vec3(117, 78, 29);
                     glm::vec3 endColor = glm::vec3(64, 41, 12);
                     float x = rgb[i][j] / 255.0f;
                     float r = ((endColor.x - startColor.x) * x) + startColor.x;
                     float g = ((endColor.y - startColor.y) * x) + startColor.y;
                     float b = ((endColor.z - startColor.z) * x) + startColor.z;
-                     */
+
 
                     /// Interpolating Rock [RK]
                     /*
