@@ -20,14 +20,15 @@ using namespace std;
 #define HEIGHT 1000                 // Y Resolution
 
 /// Noise Type Configuration
-//#define NOISE_TYPE 0              // Perlin noise
+#define NOISE_TYPE 0              // Perlin noise
 //#define NOISE_TYPE 1              // Gabor noise
 //#define NOISE_TYPE 2              // Perlin noise (marble)
 //#define NOISE_TYPE 3              // Worley noise
 //#define NOISE_TYPE 4              // New noise
 //#define NOISE_TYPE 5              // Perlin noise (splatter)
 //#define NOISE_TYPE 6              // Perlin noise (wood)
-#define NOISE_TYPE 7                // Primed Perlin noise with Szudzik
+//#define NOISE_TYPE 7                // Primed Perlin noise with Szudzik
+//#define NOISE_TYPE 8                // Primed Density noise with Szudzik
 
 /// Pairing Function Configuration
 //#define PAIRING_FUNCTION 0 	    // Linear

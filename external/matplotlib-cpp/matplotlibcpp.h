@@ -441,8 +441,18 @@ void plot_surface(const std::vector<::std::vector<Numeric>> &x,
   if (!mpl_toolkitsmod) {
     detail::_interpreter::get();
 
+    ///
+    /*PyObject* mpl_toolkits = PyString_FromString("mpl_toolkits");
+    PyObject* axis3d = PyString_FromString("mpl_toolkits.mplot3d");*/
+
     PyObject* mpl_toolkits = PyString_FromString("mpl_toolkits");
-    PyObject* axis3d = PyString_FromString("mpl_toolkits.mplot3d");
+    PyObject* axis3d = PyString_FromString("mpl_toolkits.mplot3d.axes3d");
+
+      //PyObject *sys_path = PySys_GetObject((char*)"path");
+      //const char* p = Py_TYPE(sys_path)->tp_name;
+      //printf("** %s\n", p);
+    ///
+
     if (!mpl_toolkits || !axis3d) { throw std::runtime_error("couldnt create string"); }
 
     mpl_toolkitsmod = PyImport_Import(mpl_toolkits);
@@ -450,6 +460,7 @@ void plot_surface(const std::vector<::std::vector<Numeric>> &x,
     if (!mpl_toolkitsmod) { throw std::runtime_error("Error loading module mpl_toolkits!"); }
 
     axis3dmod = PyImport_Import(axis3d);
+      //axis3dmod = PyImport_ImportModule("mpl_toolkits.mplot3d");
     Py_DECREF(axis3d);
     if (!axis3dmod) { throw std::runtime_error("Error loading module mpl_toolkits.mplot3d!"); }
   }
@@ -534,8 +545,21 @@ void plot3(const std::vector<Numeric> &x,
   if (!mpl_toolkitsmod) {
     detail::_interpreter::get();
 
-    PyObject* mpl_toolkits = PyString_FromString("mpl_toolkits");
-    PyObject* axis3d = PyString_FromString("mpl_toolkits.mplot3d");
+      ///
+      /*PyObject* mpl_toolkits = PyString_FromString("mpl_toolkits");
+      PyObject* axis3d = PyString_FromString("mpl_toolkits.mplot3d");*/
+
+      PyObject* mpl_toolkits = PyString_FromString("mpl_toolkits");
+      PyObject* axis3d = PyString_FromString("mpl_toolkits.mplot3d");
+
+      // Print path
+      PyObject *sys_path = PySys_GetObject((char*)"path");
+      PyObject* objectsRepresentation = PyObject_Repr(sys_path);
+      const char* s = PyString_AsString(objectsRepresentation);
+      //const char* p = Py_TYPE(sys_path)->tp_name;
+      printf("** %s\n", s);
+      ///
+
     if (!mpl_toolkits || !axis3d) { throw std::runtime_error("couldnt create string"); }
 
     mpl_toolkitsmod = PyImport_Import(mpl_toolkits);
@@ -543,6 +567,7 @@ void plot3(const std::vector<Numeric> &x,
     if (!mpl_toolkitsmod) { throw std::runtime_error("Error loading module mpl_toolkits!"); }
 
     axis3dmod = PyImport_Import(axis3d);
+    //axis3dmod = PyImport_ImportModule((char*)"mpl_toolkits.mplot3d");
     Py_DECREF(axis3d);
     if (!axis3dmod) { throw std::runtime_error("Error loading module mpl_toolkits.mplot3d!"); }
   }

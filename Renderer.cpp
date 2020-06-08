@@ -131,6 +131,8 @@ std::string Renderer::generateFilenames(int filenameType) {
             title = "Perlin_Wood_Noise_" + title;
         } else if (this->noiseType == 7) {
             title = "Primed_Gradient_Noise";
+        } else if (this->noiseType == 8) {
+            title = "Primed_Density_Noise";
         } else {
             // TODO: Throw error
         }
@@ -153,8 +155,10 @@ std::string Renderer::generateFilenames(int filenameType) {
             title = "Perlin_Splatter_" + title;
         } else if (this->noiseType == 6) {
             title = "Perlin_Wood_" + title;
-        } else if (this->noiseType == 6) {
+        } else if (this->noiseType == 7) {
             title = "Primed_Gradient";
+        } else if (this->noiseType == 8) {
+            title = "Primed_Desnity";
         } else {
             // TODO: Throw error
         }
@@ -367,12 +371,15 @@ int Renderer::renderApplication() {
             noise = this->NoiseInstance->generateWood(this->pairingFunction, this->noiseType, this->width, this->height);
         } else if (this->noiseType == 7) {
             noise = this->NoiseInstance->generatePrimedGradient(this->pairingFunction, this->noiseType, this->width, this->height);
+        } else if (this->noiseType == 8) {
+            noise = this->NoiseInstance->generatePrimedDensity(this->pairingFunction, this->noiseType, this->width, this->height);
         } else {
             // TODO: Throw error
         }
 
         // Save generated noise
         this->imageInstance->saveBMP(noise, this->saveImageFlag, this->width, this->height, fileNoise);
+        this->imageInstance->saveSVG(noise, this->saveImageFlag, this->width, this->height, fileNoise);
 
         // Run analysis
         if (this->analysisFlag == 1) {

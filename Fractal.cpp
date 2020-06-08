@@ -15,6 +15,7 @@ Fractal::Fractal(int noiseType) {
 
     this->perlinSource = new Perlin();
     this->primeSource = new PrimeGradient();
+    this->primeDensitySource = new PrimeGradientDensity();
     this->gaborSource = new Gabor();
     this->marbleSource = new Marble();
     this->worleySource = new Worley();
@@ -32,6 +33,7 @@ Fractal::Fractal(int noiseType) {
 Fractal::~Fractal() {
 	delete this->perlinSource;
 	delete this->primeSource;
+    delete this->primeDensitySource;
     delete this->gaborSource;
     delete this->marbleSource;
     delete this->worleySource;
@@ -97,6 +99,15 @@ float Fractal::noise(float xCoord, float yCoord, float zCoord) {
 
             freq *= this->lacunarity;
             amp *= this->persistence;
+        } else if (this->noiseType == 8) {    // Prime Density
+            //sum += this->primeDensitySource->noise(xCoord, yCoord, zCoord);
+            sum += this->primeSource->noise(xCoord * freq, yCoord * freq, zCoord * freq) * amp;
+	        break;
+
+            /*sum += this->primeSource->noise(xCoord * freq, yCoord * freq, zCoord * freq) * amp;
+
+            freq *= this->lacunarity;
+            amp *= this->persistence;*/
         } else {
 	        // TODO: Throw error
 	    }
