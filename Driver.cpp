@@ -33,8 +33,8 @@ using namespace std;
 /// Pairing Function Configuration
 //#define PAIRING_FUNCTION 0 	    // Linear
 //#define PAIRING_FUNCTION 1 	    // Cantor
-#define PAIRING_FUNCTION 2 	        // Szudzik
-//#define PAIRING_FUNCTION 3        // Rosenberg-Strong
+//#define PAIRING_FUNCTION 2 	        // Szudzik
+#define PAIRING_FUNCTION 3        // Rosenberg-Strong
 //#define PAIRING_FUNCTION 4        // Original Perlin Noise Pairing Function
 
 /// Noise Image Save Configuration

@@ -24,43 +24,67 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
         std::string title = "../Analysis/Amplitude/AmplitudeAnalysis_Pair" + std::to_string(pairingFunction) + "_Noise" + std::to_string(noiseType)
                             + "_W" + std::to_string(width) + "_H" + std::to_string(height) + ".bmp";
 
+        // Format as vector
         std::vector<float> test_data;
         for (int i = 0; i < points.size(); i++) {
             test_data.push_back(points[i].colour);
         }
 
-        plt::figure_size(1000, 1000);
+        /// Save as BMP
+        plt::figure_size(500, 500);
+        plt::xlim(0.0, 1.0);
         plt::hist(test_data, 1000);
         plt::save(title);
 
-        printf("        Amplitude analysis written: %s\n", title.c_str());
-        printf("    Successfully completed amplitude analysis.\n");
+        printf("        Amplitude analysis written to BMP: %s\n", title.c_str());
 
-        /*
-        // PREVIOUS AMPLITUDE ANALYSIS - SAVE TO CSV
-        // Create title of output
-        std::string title = "../Analysis/Amplitude/AmplitudeAnalysis_Pair" + std::to_string(pairingFunction) + "_Noise" + std::to_string(noiseType)
-             + "_W" + std::to_string(width) + "_H" + std::to_string(height) + ".csv";
-
-        // Convert title to character array
-        int titleLength = title.length();
-        char filename[titleLength + 1];
-        strcpy(filename, title.c_str());
-        std::ofstream outFile;
-
-        outFile.open(filename, std::ios::out);
-
-        outFile << "GaussianAmplitude\n";
-
-        // Loop through points and write to CSV
-        for (int i = 0; i < points.size(); i++) {
-            outFile << points[i].colour << "\n";
+        /// Save as SVG
+        const char* filename = title.c_str();
+        cv::Mat I = imread( cv::samples::findFile(filename), cv::IMREAD_GRAYSCALE);
+        if(I.empty()) {
+            std::cout << "    [Analysis.cpp] Error: reading image from" << filename << std::endl;
         }
 
-        outFile.close();
-        printf("    Amplitude analysis written: %s\n", title.c_str());
-        printf("Successfully completed amplitude analysis.\n");
-         */
+        // Expand input image to optimal size
+        cv::Mat padded;
+        int m = cv::getOptimalDFTSize(I.rows);
+        int n = cv::getOptimalDFTSize(I.cols);
+
+        // Add zero values on border
+        copyMakeBorder(I, padded, 0, m - I.rows, 0, n - I.cols, cv::BORDER_CONSTANT, cv::Scalar::all(0));
+        cv::Mat planes[] = {
+                cv::Mat_<float>(padded), cv::Mat::zeros(padded.size(), CV_32F)
+        };
+        cv::Mat complexI;
+
+        // Add to the expanded another plane with zeros
+        merge(planes, 2, complexI);
+        cv::Mat magI = planes[0];
+        normalize(magI, magI, 0, 1, cv::NORM_MINMAX);
+
+        title = "../Analysis/Amplitude/AmplitudeAnalysis_Pair" + std::to_string(pairingFunction) + "_Noise" + std::to_string(noiseType)
+                + "_W" + std::to_string(width) + "_H" + std::to_string(height) + ".svg";
+        int outputWidth = 1200, outputHeight = 1200, padding = 100;
+        float radius = 2.0f;
+
+        std::ofstream outfile;
+        outfile.open(title);
+
+        headerSVG(outfile, outputWidth, outputHeight, "Fourier Analysis");
+
+        for (int i = 0 ; i < magI.cols; ++i) {
+            for (int j = 0; j < magI.rows; ++j) {
+                int temp = floor(255.0f * magI.at<float>(i, j));
+                outfile << "    <circle cx=\"" << padding + j << "\" cy=\"" << padding + i << "\" r=\"" << radius << "\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"circle" << i*width+j << "\"/>\n";
+            }
+        }
+
+        footerSVG(outfile);
+        outfile.close();
+
+        printf("        Amplitude analysis written to SVG: %s\n", title.c_str());
+        printf("    Successfully completed amplitude analysis.\n");
+
     }
 
     // Fourier analysis
@@ -68,6 +92,7 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
 
         printf("    Starting Fourier analysis.\n");
 
+        /// Fourier transform
         // Read noise file via OpenCV imread (properly formats into cv::Mat object)
         const char* filename = "../Output/temp/noise_output.bmp";
         cv::Mat I = imread( cv::samples::findFile(filename), cv::IMREAD_GRAYSCALE);
@@ -133,15 +158,34 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
         unsigned char *input = (unsigned char*)(magI.data);
         uint8_t colourByte;
 
+        /// Save as SVG
+        std::string title = "../Analysis/Fourier/FourierAnalysis_Pair" + std::to_string(pairingFunction) + "_Noise" + std::to_string(noiseType)
+                + "_W" + std::to_string(width) + "_H" + std::to_string(height) + ".svg";
+        int outputWidth = 1200, outputHeight = 1200, padding = 100;
+        float radius = 2.0f;
+
+        std::ofstream outfile;
+        outfile.open(title);
+
+        headerSVG(outfile, outputWidth, outputHeight, "Fourier Analysis");
+
         // Loop through points and assign noise values to RGB array
         unsigned char rgb[magI.cols][magI.rows];
         for (int i = 0 ; i < magI.cols; ++i) {
             for (int j = 0; j < magI.rows; ++j) {
+                int temp = floor(255 * magI.at<float>(i, j));
+                outfile << "    <circle cx=\"" << padding + i << "\" cy=\"" << padding + j << "\" r=\"" << radius << "\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"circle" << i*width+j << "\"/>\n";
+
                 colourByte = uint8_t(magI.at<float>(i, j) * 0xff);
                 rgb[i][j] = colourByte;
             }
         }
 
+        footerSVG(outfile);
+        outfile.close();
+        printf("        Fourier analysis written as SVG: %s\n", title.c_str());
+
+        /// Save as BMP
         // Loop through previously generated array and place into sequential char array for output to BMP
         int numChannels = 3;
         unsigned char data[width * height * numChannels];
@@ -153,12 +197,13 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
         }
 
         // Create title of output
-        std::string title = "../Analysis/Fourier/FourierAnalysis_Pair" + std::to_string(pairingFunction) + "_Noise" + std::to_string(noiseType)
+        title = "../Analysis/Fourier/FourierAnalysis_Pair" + std::to_string(pairingFunction) + "_Noise" + std::to_string(noiseType)
                             + "_W" + std::to_string(width) + "_H" + std::to_string(height) + ".bmp";
 
+        // Save as BMP
         stbi_write_bmp(title.c_str(), width, height, 1, data);
 
-        printf("        Fourier analysis written: %s\n", title.c_str());
+        printf("        Fourier analysis written as BMP: %s\n", title.c_str());
         printf("    Successfully completed Fourier analysis.\n");
 
         // Restore original image
@@ -168,4 +213,60 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
         imshow("Reconstructed", inverseTransform);
         cv::waitKey();*/
     }
+}
+
+/*
+ * Output SVG header.
+ */
+void Analysis::headerSVG(std::ofstream& outfile, int width, int height, std::string file) {
+
+    std::string svgHeaderPart1="<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+                               "<!-- Created with CurveBenchmark -->\n"
+                               "<svg\n"
+                               "    xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
+                               "    xmlns:cc=\"http://creativecommons.org/ns#\"\n"
+                               "    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
+                               "    xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
+                               "    xmlns=\"http://www.w3.org/2000/svg\"\n"
+                               "    xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
+                               "    xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
+                               "    width=\"";
+    std::string svgHeaderPart2="\"\n"
+                               "    height=\"";
+    std::string svgHeaderPart3="\"\n"
+                               "    id=\"svg2\"\n"
+                               "    version=\"1.1\"\n"
+                               //		"    inkscape:version=\"0.48.1 r9760\"\n"
+                               "    sodipodi:docname=\"";
+    std::string svgHeaderPart4 = "\">\n"
+                                 "<defs\n"
+                                 "    id=\"defs4\" />\n"
+                                 "<metadata\n"
+                                 "    id=\"metadata7\">\n"
+                                 "    <rdf:RDF>\n"
+                                 "        <cc:Work\n"
+                                 "            rdf:about=\"\">\n"
+                                 "            <dc:format>image/svg+xml</dc:format>\n"
+                                 "            <dc:type\n"
+                                 "                rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
+                                 "            <dc:title></dc:title>\n"
+                                 "        </cc:Work>\n"
+                                 "    </rdf:RDF>\n"
+                                 "</metadata>\n"
+                                 "<g\n"
+                                 "    inkscape:label=\"Layer 1\"\n"
+                                 "    inkscape:groupmode=\"layer\"\n"
+                                 "    id=\"layer1\">\n";
+
+    outfile << svgHeaderPart1 << width << svgHeaderPart2 << height << svgHeaderPart3 << file << svgHeaderPart4 << std::endl;
+}
+
+/*
+ * Output SVG footer.
+ */
+void Analysis::footerSVG(std::ofstream& outfile) {
+    std::string svgFooter = "    </g>\n"
+                            "</svg>";
+
+    outfile << svgFooter << std::endl;
 }

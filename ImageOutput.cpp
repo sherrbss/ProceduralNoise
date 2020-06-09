@@ -237,7 +237,7 @@ void ImageOutput::headerSVG(std::ofstream& outfile, int width, int height, std::
 	std::string svgHeaderPart3="\"\n"
 		"    id=\"svg2\"\n"
 		"    version=\"1.1\"\n"
-//		"    inkscape:version=\"0.48.1 r9760\"\n"
+//		"    inkscape:version=\"0.48.1 r9760\"\n";
 		"    sodipodi:docname=\"";
 	std::string svgHeaderPart4 = "\">\n"
 		"<defs\n"
@@ -283,6 +283,9 @@ void ImageOutput::footerSVG(std::ofstream& outfile) {
  */
 void ImageOutput::saveSVG(std::vector<Noise::Point> points, int writeSVG, int width, int height, std::string file) {
 
+    // TODO: Add coloured output
+    // TODO: Add support for analysis and Fourier save
+
     if (writeSVG == 1) {
 
         std::string filename = "../Output/Noise/" + file + ".svg";
@@ -308,5 +311,13 @@ void ImageOutput::saveSVG(std::vector<Noise::Point> points, int writeSVG, int wi
 
         printf("    SVG written: %s\n", filename.c_str());
         printf("Successfully wrote noise as SVG.\n");
+    }
+
+    int primeSpiralFlag = 1;
+    if (primeSpiralFlag == 1) {
+
+
+
+
     }
 }

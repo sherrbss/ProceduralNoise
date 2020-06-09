@@ -15,6 +15,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "ImageOutput.h"
+#include "PrimePlot.h"
 #include "Analysis.h"
 #include "Texture.h"
 

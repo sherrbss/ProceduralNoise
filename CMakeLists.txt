@@ -66,6 +66,7 @@ add_executable(Noise
         Texture.cpp
         Camera.cpp
         Renderer.cpp
+        PrimePlot.cpp
         Shader.h
         external/tinycolormap/tinycolormap.hpp
         external/stb_image/stb_image.cpp

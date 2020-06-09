@@ -381,6 +381,11 @@ int Renderer::renderApplication() {
         this->imageInstance->saveBMP(noise, this->saveImageFlag, this->width, this->height, fileNoise);
         this->imageInstance->saveSVG(noise, this->saveImageFlag, this->width, this->height, fileNoise);
 
+        // Generate prime distribution on polar plot
+        /*PrimePlot *primePlotInstance;
+        primePlotInstance->generatePrimePlot();
+        delete primePlotInstance;*/
+
         // Run analysis
         if (this->analysisFlag == 1) {
             printf("\nStarting analysis.\n");
