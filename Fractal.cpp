@@ -44,7 +44,8 @@ Fractal::~Fractal() {
 
 float Fractal::noise(float xCoord, float yCoord, float zCoord) {
 	float sum = 0;
-	float freq = this->initFrequency;
+	//float freq = 16;
+    float freq = this->initFrequency;
 	float amp = this->initAmplitude;
 
 	for (int i = 0; i < this->octaves; i++) {

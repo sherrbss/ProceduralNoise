@@ -64,8 +64,7 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
 
         title = "../Analysis/Amplitude/AmplitudeAnalysis_Pair" + std::to_string(pairingFunction) + "_Noise" + std::to_string(noiseType)
                 + "_W" + std::to_string(width) + "_H" + std::to_string(height) + ".svg";
-        int outputWidth = 1200, outputHeight = 1200, padding = 100;
-        float radius = 2.0f;
+        int outputWidth = 300, outputHeight = 300, padding = 100;
 
         std::ofstream outfile;
         outfile.open(title);
@@ -75,7 +74,7 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
         for (int i = 0 ; i < magI.cols; ++i) {
             for (int j = 0; j < magI.rows; ++j) {
                 int temp = floor(255.0f * magI.at<float>(i, j));
-                outfile << "    <circle cx=\"" << padding + j << "\" cy=\"" << padding + i << "\" r=\"" << radius << "\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"circle" << i*width+j << "\"/>\n";
+                outfile << "    <circle cx=\"" << (padding + j) / 4.0f << "\" cy=\"" << (padding + i) / 4.0f << "\" r=\"" << 0.25 << "\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"circle" << i*width+j << "\"/>\n";
             }
         }
 
@@ -161,8 +160,7 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
         /// Save as SVG
         std::string title = "../Analysis/Fourier/FourierAnalysis_Pair" + std::to_string(pairingFunction) + "_Noise" + std::to_string(noiseType)
                 + "_W" + std::to_string(width) + "_H" + std::to_string(height) + ".svg";
-        int outputWidth = 1200, outputHeight = 1200, padding = 100;
-        float radius = 2.0f;
+        int outputWidth = 300, outputHeight = 300, padding = 100;
 
         std::ofstream outfile;
         outfile.open(title);
@@ -174,7 +172,7 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
         for (int i = 0 ; i < magI.cols; ++i) {
             for (int j = 0; j < magI.rows; ++j) {
                 int temp = floor(255 * magI.at<float>(i, j));
-                outfile << "    <circle cx=\"" << padding + i << "\" cy=\"" << padding + j << "\" r=\"" << radius << "\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"circle" << i*width+j << "\"/>\n";
+                outfile << "    <circle cx=\"" << (padding + i) / 4.0f << "\" cy=\"" << (padding + j) / 4.0f << "\" r=\"" << 0.25 << "\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"circle" << i*width+j << "\"/>\n";
 
                 colourByte = uint8_t(magI.at<float>(i, j) * 0xff);
                 rgb[i][j] = colourByte;

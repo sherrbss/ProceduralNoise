@@ -29,6 +29,7 @@ public:
     void footerSVG(std::ofstream& outfile);
 
     void generatePrimePlot();
+    void generateUnitCircle();
 };
 
 #endif

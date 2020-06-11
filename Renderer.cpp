@@ -382,11 +382,15 @@ int Renderer::renderApplication() {
         this->imageInstance->saveSVG(noise, this->saveImageFlag, this->width, this->height, fileNoise);
 
         // Generate prime distribution on polar plot
-        /*PrimePlot *primePlotInstance;
-        primePlotInstance->generatePrimePlot();
-        delete primePlotInstance;*/
+        int primeDistributionFlag = 0;
+        if (primeDistributionFlag == 1) {
+            PrimePlot *primePlotInstance;
+            primePlotInstance->generatePrimePlot();
+            primePlotInstance->generateUnitCircle();
+            delete primePlotInstance;
+        }
 
-        // Run analysis
+        // Run Fourier & amplitude analysis
         if (this->analysisFlag == 1) {
             printf("\nStarting analysis.\n");
             this->AnalysisInstance->runAnalysis(noise, this->pairingFunction, this->noiseType, this->width, this->height, this->amplitudeAnalysisFlag, this->fourierAnalysisFlag);

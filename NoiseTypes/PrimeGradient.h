@@ -13,11 +13,6 @@
 #include <cmath>
 #include <glm/glm/glm.hpp>
 
-///
-#include <matplotlib-cpp/matplotlibcpp.h>
-namespace plt = matplotlibcpp;
-///
-
 #ifndef _PRIMEGRADIENT_H_
 #define _PRIMEGRADIENT_H_
 

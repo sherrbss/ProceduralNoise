@@ -13,90 +13,14 @@ PrimeGradient::PrimeGradient() {
     // Setup primes generation factors
     this->numPrimes = 256;
 
-    /// Start primes about unit circle
-    for (int num = 0; num < 1; num++) {
-        this->offset = num;
-        this->prime = new int[this->numPrimes];
-
-        // Sieve for primes
-        sieve(this->offset, this->numPrimes);
-
-        int dimensionFlag = 0;
-        if (dimensionFlag == 1) {
-            // Create filename of output
-            std::string filename = "../Analysis/Distribution/PrimeUnitCircle_Offset" + std::to_string(offset) + ".bmp";
-
-            std::vector<float> x, y;
-            for (int i = 0; i < this->numPrimes; i++) {
-                x.push_back(cos(this->prime[i]));
-                y.push_back(sin(this->prime[i]));
-            }
-
-            // Figure size and config
-            plt::figure_size(500, 500);
-            plt::xlim(-1.25, 1.25);
-            plt::ylim(-1.25, 1.25);
-
-            // Labels
-            plt::xlabel("x");
-            plt::ylabel("y");
-            plt::title("Primes Along Unit Circle (offset = " + std::to_string(offset) + ")");
-            plt::grid(true);
-
-            // Plot & save
-            plt::plot(x, y, ".k");
-            plt::save(filename);
-        }
-
-        printf("** Offset %d saved.\n", offset);
-    }
-    /// End primes about unit circle
-
-    /*
     this->offset = 0;
     this->prime = new int[this->numPrimes];
 
     // Sieve for primes
     sieve(this->offset, this->numPrimes);
 
-    /// Start primes about unit circle
-    // Create title of output
-    std::string title = "../Output/temp/PrimeUnitCircle_Offset" + std::to_string(offset) + ".bmp";
-
-    std::vector<float> x, y;
-    for (int i = 0; i < this->numPrimes; i++) {
-        x.push_back(cos(this->prime[i]));
-        y.push_back(sin(this->prime[i]));
-    }
-
-    // Figure size and config
-    plt::figure_size(500, 500);
-    plt::xlim(-1.25, 1.25);
-    plt::ylim(-1.25, 1.25);
-
-    // Labels
-    plt::xlabel("x");
-    plt::ylabel("y");
-    plt::title("Primes Along Unit Circle (offset = " + std::to_string(offset) + ")");
-    plt::grid(true);
-
-    // Plot & save
-    plt::plot(x, y, ".k");
-    plt::save(title);
-    /// End primes about unit circle
-     */
-
-    // TODO: DEBUG ONLY - FOR DESMOS ANALYSIS
-    int desmosFlag = 0;         // 0 - off | 1 - on
-    if (desmosFlag == 1) {
-        printf("p = [");
-        for (int i = 0; i < (this->numPrimes - 1); i++) {
-            printf("%d, ", this->prime[i]);
-        }
-        printf("%d]\n", this->prime[this->numPrimes - 1]);
-    }
-
-    int randomizeFlag = 0;      // 0 - off | 1 - on
+    // Randomize prime table
+    int randomizeFlag = 0;          //  0 - off | 1 - on
     if (randomizeFlag == 1) {
         // Randomize prime table
         int swapIndex = 0;
@@ -125,20 +49,6 @@ bool PrimeGradient::isPrime(int val) {
     }
 
     return true;
-
-    // val mod 6 == 1
-    if (val % 6 == 1) {
-        return true;
-    } else {
-        return false;
-    }
-
-    // val mod 6 == 5
-    if (val % 6 == 5) {
-        return true;
-    } else {
-        return false;
-    }
 }
 
 void PrimeGradient::sieve(int offset, int numPrimes) {
@@ -151,7 +61,6 @@ void PrimeGradient::sieve(int offset, int numPrimes) {
     while (count < numPrimes) {
 
         if (current == 2 || current == 3 || isPrime(current)) {
-
             if (++countOffset > offset) {
                 this->prime[count] = current;
 
@@ -226,7 +135,7 @@ float PrimeGradient::noise(float xCoord, float yCoord, float zCoord) {
     float dotX0Y0Z0, dotX0Y0Z1, dotX0Y1Z0, dotX0Y1Z1, dotX1Y0Z0, dotX1Y0Z1, dotX1Y1Z0, dotX1Y1Z1;
 
     // Generate vectors
-    int dimensionFlag = 1;          // 0 - Hybrid | 1 - 3D | 2 - 2D | 3 - Experimental
+    int dimensionFlag = 2;          // 0 - Hybrid | 1 - 3D | 2 - 2D | 3 - Experimental
     if (dimensionFlag == 0) {
         prime = this->prime[this->hashInstance.szudzikPair(gradientX0, gradientY0) & 255];
         dotX0Y0Z0 = pointX0 * cos(prime) + pointY0 * sin(prime);
