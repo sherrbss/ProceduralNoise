@@ -43,6 +43,9 @@ public:
     // Sets width and height within Perlin object
 	void setPerlinDimensions(int width, int height);
 
+	//
+	void setPGNOctaves(int numOctaves);
+
 	// Sets hashing mechanism
 	void setPairingFunction(int pairingFunction);
     void setPairingFunctionMarble(int pairingFunction);

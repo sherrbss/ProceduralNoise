@@ -34,12 +34,13 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
         plt::figure_size(500, 500);
         plt::xlim(0.0, 1.0);
         plt::hist(test_data, 1000);
+        //plt::axis("off");
         plt::save(title);
 
         printf("        Amplitude analysis written to BMP: %s\n", title.c_str());
 
         /// Save as SVG
-        const char* filename = title.c_str();
+        /*const char* filename = title.c_str();
         cv::Mat I = imread( cv::samples::findFile(filename), cv::IMREAD_GRAYSCALE);
         if(I.empty()) {
             std::cout << "    [Analysis.cpp] Error: reading image from" << filename << std::endl;
@@ -64,7 +65,7 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
 
         title = "../Analysis/Amplitude/AmplitudeAnalysis_Pair" + std::to_string(pairingFunction) + "_Noise" + std::to_string(noiseType)
                 + "_W" + std::to_string(width) + "_H" + std::to_string(height) + ".svg";
-        int outputWidth = 300, outputHeight = 300, padding = 100;
+        int outputWidth = 1200, outputHeight = 1200, padding = 100;
 
         std::ofstream outfile;
         outfile.open(title);
@@ -74,15 +75,33 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
         for (int i = 0 ; i < magI.cols; ++i) {
             for (int j = 0; j < magI.rows; ++j) {
                 int temp = floor(255.0f * magI.at<float>(i, j));
-                outfile << "    <circle cx=\"" << (padding + j) / 4.0f << "\" cy=\"" << (padding + i) / 4.0f << "\" r=\"" << 0.25 << "\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"circle" << i*width+j << "\"/>\n";
+                //outfile << "    <circle cx=\"" << (padding + j) / 2.0f << "\" cy=\"" << (padding + i) / 2.0f << "\" r=\"" << 0.75f << "\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"circle" << i*width+j << "\"/>\n";
+                outfile << "    <rect x=\"" << (padding + j) - 0.5 << "\" y=\"" << (padding + i) - 0.5 << "\" width=\"1.25\" height=\"1.25\" stoke=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"rect" << i*width+j << "\"/>\n";
             }
         }
+
+        // Draw X-axis line
+        outfile << "    <line x1=\"50\" y1=\"250\" x2=\"250\" y2=\"250\" stroke=\"black\" />";
+
+        // Draw tickmarks
+        outfile << "    <line x1=\"50\" y1=\"250\" x2=\"50\" y2=\"255\" stroke=\"black\" />";
+        outfile << "    <line x1=\"100\" y1=\"250\" x2=\"100\" y2=\"255\" stroke=\"black\" />";
+        outfile << "    <line x1=\"150\" y1=\"250\" x2=\"150\" y2=\"255\" stroke=\"black\" />";
+        outfile << "    <line x1=\"200\" y1=\"250\" x2=\"200\" y2=\"255\" stroke=\"black\" />";
+        outfile << "    <line x1=\"250\" y1=\"250\" x2=\"250\" y2=\"255\" stroke=\"black\" />";
+
+        // Tickmark labels
+        outfile << "<text font-family=\"Times, serif\" text-anchor=\"middle\" alignment-baseline=\"middle\" x=\"50\" y=\"265\" font-size=\"10px\">0.0</text>";
+        outfile << "<text font-family=\"Times, serif\" text-anchor=\"middle\" alignment-baseline=\"middle\" x=\"100\" y=\"265\" font-size=\"10px\">0.25</text>";
+        outfile << "<text font-family=\"Times, serif\" text-anchor=\"middle\" alignment-baseline=\"middle\" x=\"150\" y=\"265\" font-size=\"10px\">0.5</text>";
+        outfile << "<text font-family=\"Times, serif\" text-anchor=\"middle\" alignment-baseline=\"middle\" x=\"200\" y=\"265\" font-size=\"10px\">0.75</text>";
+        outfile << "<text font-family=\"Times, serif\" text-anchor=\"middle\" alignment-baseline=\"middle\" x=\"250\" y=\"265\" font-size=\"10px\">1.0</text>";
 
         footerSVG(outfile);
         outfile.close();
 
         printf("        Amplitude analysis written to SVG: %s\n", title.c_str());
-        printf("    Successfully completed amplitude analysis.\n");
+        printf("    Successfully completed amplitude analysis.\n");*/
 
     }
 
@@ -160,28 +179,28 @@ void Analysis::runAnalysis(std::vector<Noise::Point> points, int pairingFunction
         /// Save as SVG
         std::string title = "../Analysis/Fourier/FourierAnalysis_Pair" + std::to_string(pairingFunction) + "_Noise" + std::to_string(noiseType)
                 + "_W" + std::to_string(width) + "_H" + std::to_string(height) + ".svg";
-        int outputWidth = 300, outputHeight = 300, padding = 100;
+        /*int outputWidth = 1200, outputHeight = 1200, padding = 100;
 
         std::ofstream outfile;
         outfile.open(title);
 
-        headerSVG(outfile, outputWidth, outputHeight, "Fourier Analysis");
+        headerSVG(outfile, outputWidth, outputHeight, "Fourier Analysis");*/
 
         // Loop through points and assign noise values to RGB array
         unsigned char rgb[magI.cols][magI.rows];
         for (int i = 0 ; i < magI.cols; ++i) {
             for (int j = 0; j < magI.rows; ++j) {
                 int temp = floor(255 * magI.at<float>(i, j));
-                outfile << "    <circle cx=\"" << (padding + i) / 4.0f << "\" cy=\"" << (padding + j) / 4.0f << "\" r=\"" << 0.25 << "\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"circle" << i*width+j << "\"/>\n";
+                //outfile << "    <rect x=\"" << (padding + i) - 0.5 << "\" y=\"" << (padding + j) - 0.5 << "\" width=\"1.25\" height=\"1.25\" stoke=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"rect" << i*width+j << "\"/>\n";
 
                 colourByte = uint8_t(magI.at<float>(i, j) * 0xff);
                 rgb[i][j] = colourByte;
             }
         }
 
-        footerSVG(outfile);
+        /*footerSVG(outfile);
         outfile.close();
-        printf("        Fourier analysis written as SVG: %s\n", title.c_str());
+        printf("        Fourier analysis written as SVG: %s\n", title.c_str());*/
 
         /// Save as BMP
         // Loop through previously generated array and place into sequential char array for output to BMP

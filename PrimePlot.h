@@ -12,6 +12,7 @@
 #include <ctime>
 #include <cmath>
 #include <glm/glm/glm.hpp>
+#include <glm/glm/gtc/matrix_transform.hpp>
 #include <opencv2/opencv.hpp>
 
 #include <matplotlib-cpp/matplotlibcpp.h>
@@ -30,6 +31,9 @@ public:
 
     void generatePrimePlot();
     void generateUnitCircle();
+    void generateGradientSVG();
+
+    float fade(float x);
 };
 
 #endif

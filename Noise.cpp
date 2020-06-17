@@ -143,6 +143,8 @@ std::vector<Noise::Point> Noise::generatePrimedGradient(int pairingFunction, int
     Fractal *noiseGenerator = new Fractal(noiseType);
     noiseGenerator->setPerlinDimensions(width, height);
     noiseGenerator->setPairingFunction(pairingFunction);
+    noiseGenerator->setOctaves(8);
+    noiseGenerator->setPGNOctaves(8);
     noiseGenerator->setInitFrequency(4.0f);
 
     // Define array size

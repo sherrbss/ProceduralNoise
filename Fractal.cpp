@@ -44,7 +44,8 @@ Fractal::~Fractal() {
 
 float Fractal::noise(float xCoord, float yCoord, float zCoord) {
 	float sum = 0;
-	//float freq = 16;
+	//float freq = 128;
+    //float freq = 8;
     float freq = this->initFrequency;
 	float amp = this->initAmplitude;
 
@@ -96,12 +97,13 @@ float Fractal::noise(float xCoord, float yCoord, float zCoord) {
 
             break;
         } else if (this->noiseType == 7) {    // Prime Gradient
+            this->primeSource->updateCurrentOctave(i);
             sum += this->primeSource->noise(xCoord * freq, yCoord * freq, zCoord * freq) * amp;
 
             freq *= this->lacunarity;
             amp *= this->persistence;
         } else if (this->noiseType == 8) {    // Prime Density
-            //sum += this->primeDensitySource->noise(xCoord, yCoord, zCoord);
+            sum += this->primeDensitySource->noise(xCoord, yCoord, zCoord);
             sum += this->primeSource->noise(xCoord * freq, yCoord * freq, zCoord * freq) * amp;
 	        break;
 
@@ -140,6 +142,11 @@ void Fractal::setPairingFunctionSplatter(int pairingFunction) {
 
 void Fractal::setPairingFunctionWood(int pairingFunction) {
     this->valueWoodSource->setPairingFunction(pairingFunction);
+}
+
+void Fractal::setPGNOctaves(int numOctaves) {
+    this->primeSource->setNumOctaves(numOctaves);
+    this->primeSource->generatePrimeTable();
 }
 
 void Fractal::setOctaves(int o) {

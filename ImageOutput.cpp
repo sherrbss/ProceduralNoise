@@ -294,7 +294,7 @@ void ImageOutput::saveSVG(std::vector<Noise::Point> points, int writeSVG, int wi
         std::ofstream outfile;
         outfile.open(filename);
 
-        int outputWidth = 300, outputHeight = 300, padding = 25;
+        int outputWidth = 1200, outputHeight = 1200, padding = 100;
         float radius = 1.0f;
 
         headerSVG(outfile, outputWidth, outputHeight, file);
@@ -303,7 +303,8 @@ void ImageOutput::saveSVG(std::vector<Noise::Point> points, int writeSVG, int wi
             int temp = floor(255.0f * points[i].colour);
 
             // FIXME: Rendering flipped x & y
-            outfile << "    <circle cx=\"" << padding + points[i].y / 4.0f << "\" cy=\"" << padding + points[i].x / 4.0f << "\" r=\"" << radius / 4.0f << "\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"circle" << i << "\"/>\n";
+            //outfile << "    <circle cx=\"" << (padding + points[i].y) / 2.0f << "\" cy=\"" << (padding + points[i].x) / 2.0f << "\" r=\"" << radius << "\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"circle" << i << "\"/>\n";
+            outfile << "    <rect x=\"" << (padding + points[i].y) - 0.5 << "\" y=\"" << (padding + points[i].x) - 0.5 << "\" width=\"1.25\" height=\"1.25\" stoke=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" fill=\"rgb(" << temp << ", " << temp << ", " << temp << ")\" id=\"rect" << i << "\"/>\n";
         }
 
         footerSVG(outfile);
