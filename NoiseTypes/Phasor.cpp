@@ -56,7 +56,7 @@ glm::vec2 Phasor::cell(glm::ivec2 ij, glm::vec2 uv, float f, float b) {
         float rp = uni(0.0,2.0*M_PI);
         glm::vec2 trueUv = ((glm::vec2(ij) + impulse_centre) *cellsz) *  (float)height / (float)width;
         trueUv.y = -trueUv.y;
-        float o = (trueUv.x + trueUv.y) * 2.0* M_PI;
+        float o = (trueUv.x) * 2.0* M_PI;
         //float o = 2.0* M_PI;
         noise = noise + phasor(d, f, b ,o,rp );
         impulse++;
