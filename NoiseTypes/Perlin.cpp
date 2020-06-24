@@ -67,13 +67,14 @@ float Perlin::fade(float x) {
      * [1] and [2] very alike. [3] and [4] very alike.
      */
 
+    /// Perlin
     // Cubic (original gradient noise) [1]
     //return x * x * (3.0f - 2.0f * x);
 
     // Cos ease [2]
     //return pow(cos(3.14159f * (x - 1.0f) / 2.0f), 2.0f);
 
-    // Quintic (better gradient noise) [3]
+    // *Quintic (better gradient noise) [3]
 	return ((6.0f * x - 15.0f) * x + 10.0f) * x * x * x;
 
     // Parametric [4]
@@ -107,8 +108,8 @@ float Perlin::noise(float xCoord, float yCoord, float zCoord) {
     int gradientIndex, prime;
     float dotX0Y0Z0, dotX0Y0Z1, dotX0Y1Z0, dotX0Y1Z1, dotX1Y0Z0, dotX1Y0Z1, dotX1Y1Z0, dotX1Y1Z1;
 
-    int permTableFlag = 0;      // 0 - with permutation table | 1 - without permutation table
-    if (permTableFlag == 0) {
+        int permTableFlag = 0;      // 0 - with permutation table | 1 - without permutation table
+        if (permTableFlag == 0) {
         if (this->pairingFunction == 0) {                  /// Linear Hashing
             // Compute dot product between gradient and sample position vector
             gradientIndex = permutationTable[this->hashInstance.linearPair(
@@ -488,22 +489,23 @@ float Perlin::noise(float xCoord, float yCoord, float zCoord) {
         }
     }
 
-	// Interpolate
-	float s = dotX0Y0Z0 + fade(pointX0) * (dotX0Y0Z1 - dotX0Y0Z0);
-	float t = dotX0Y1Z0 + fade(pointX0) * (dotX0Y1Z1 - dotX0Y1Z0);
-	float u = dotX1Y0Z0 + fade(pointX0) * (dotX1Y0Z1 - dotX1Y0Z0);
-	float v = dotX1Y1Z0 + fade(pointX0) * (dotX1Y1Z1 - dotX1Y1Z0);
-	float st = s + fade(pointY0) * (t - s);
-	float uv = u + fade(pointY0) * (v - u);
+    // Interpolate
+    float s = dotX0Y0Z0 + fade(pointX0) * (dotX0Y0Z1 - dotX0Y0Z0);
+    float t = dotX0Y1Z0 + fade(pointX0) * (dotX0Y1Z1 - dotX0Y1Z0);
+    float u = dotX1Y0Z0 + fade(pointX0) * (dotX1Y0Z1 - dotX1Y0Z0);
+    float v = dotX1Y1Z0 + fade(pointX0) * (dotX1Y1Z1 - dotX1Y1Z0);
+    float st = s + fade(pointY0) * (t - s);
+    float uv = u + fade(pointY0) * (v - u);
 
-	// Perlin Noise
-	float result = st + fade(pointZ0) * (uv - st);
-	return result;
+    // Perlin Noise
+    float result = st + fade(pointZ0) * (uv - st);
+    return result;
 
-	// Perlin Noise with Ridges
-	//return (1.0f - abs(result)) * 2.0f - 1.0f;
-	//return abs(result);
+    // Perlin Noise with Ridges
+    //return (1.0f - abs(result)) * 2.0f - 1.0f;
+    //return abs(result);
 
     // Random Noise
-	//return (float(rand()) / (RAND_MAX/2)) - 1.0f;
+    //return (float(rand()) / (RAND_MAX/2)) - 1.0f;
+
 }

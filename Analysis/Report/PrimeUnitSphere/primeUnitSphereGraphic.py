@@ -3,8 +3,12 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib import rcParams
 import numpy as np
-from math import sin, cos
+from math import sin, cos, floor, pi, acos
 from itertools import product, combinations
+from random import seed
+from random import random
+
+seed(1)
 
 rcParams['xtick.color'] = (0.0, 0.0, 0.0, 0.2)
 rcParams['ytick.color'] = (0.0, 0.0, 0.0, 0.2)
@@ -14,7 +18,7 @@ rcParams['axes.edgecolor'] = (0.0, 0.0, 0.0, 0.2)
 fig = plt.figure(figsize=(7.5,7.5))
 cm = plt.get_cmap("GnBu")
 
-'''
+
 ax = fig.gca(projection='3d')
 
 # Configure axis appearence
@@ -53,7 +57,7 @@ x = np.cos(u)*np.sin(v)
 y = np.sin(u)*np.sin(v)
 z = np.cos(v)
 ax.plot_wireframe(x, y, z, color="k", alpha=0.2)
-'''
+
 
 # Checks if a given value is prime
 def isPrime(val):
@@ -77,7 +81,30 @@ phi_ = []
 while(count < numPrimes):
     if(isPrime(current) or current == 2 or current == 3):
         
+        theta = current**2
+        phi = current**0.5
         
+        u = ((phi - (phi // (2*3.14159)) * (2*3.14159)) / 3.14159) - 1
+        
+        tempX = ((1 - u**2)**0.5) * cos(theta)
+        tempY = ((1 - u**2)**0.5) * sin(theta)
+        tempZ = u
+        
+        # Generate depth-based colour mapping
+        distX = abs(-1 - tempX)
+        distY = abs(1 - tempY)
+        distZ = abs(1 - tempZ)
+        
+        # Darker points closer to camera
+        mag = 1 - (((distX * distX + distY * distY + distZ + distZ)**0.5) / (12**0.5)) * (1 - .35)
+        col = cm(mag)
+        
+        # Plot
+        ax.scatter([tempX], [tempZ], [tempY], color=col, alpha=1)
+    
+    
+    
+        '''
         theta = (current**2)
         phi = (current**0.5)
         
@@ -98,12 +125,16 @@ while(count < numPrimes):
         col = cm(mag)
         
         # Plot
-        '''ax.scatter([tempX], [tempZ], [tempY], color=col, alpha=1)'''
+        ax.scatter([tempX], [tempZ], [tempY], color=col, alpha=1)
+        '''
+        
+        
+        
         count += 1
 
     current += 1
 
-'''
+
 # Set view
 ax.view_init(20,135)
 
@@ -111,18 +142,23 @@ ax.view_init(20,135)
 plt.savefig("primeUnitSphere.pdf", bbox_inches='tight')
 #plt.savefig("primeUnitSphere.pdf", bbox_inches=None)
 #plt.show()
-'''
 
-print(theta_)
-print()
-print(phi_)
+'''
+#print(theta_)
+#print()
+#print(phi_)
 cm = plt.cm.get_cmap('RdYlBu')
 xy = range(20)
 z = xy
-#sc = plt.scatter(xy, xy, c=xy, vmin=0, vmax=20, s=35, cmap=cm)
+sc = plt.scatter(xy, xy, c=xy, vmin=0, vmax=20, s=35, cmap=cm)
+'''
+
+'''
 #sc = plt.hist(theta_, bins=32, range=(0, 2621161))
 #sc = plt.hist(phi_, bins=32, range=(0, 40.3))
 #sc = plt.hist(theta_, bins=32, range=(0, 2*3.14159))
 sc = plt.hist(phi_, bins=32, range=(0, 2*3.14159))
+'''
+
 #plt.colorbar(sc)
 plt.show()

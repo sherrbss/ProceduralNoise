@@ -54,6 +54,15 @@ public:
 
     // Generate value noise (wood)
     std::vector<Noise::Point> generateWood(int pairingFunction, int noiseType, int width, int height);
+
+    // Generate value noise (wood)
+    std::vector<Noise::Point> generateBetterGradient(int pairingFunction, int noiseType, int width, int height);
+
+    // Generate value noise (wood)
+    std::vector<Noise::Point> generateWavelet(int pairingFunction, int noiseType, int width, int height);
+
+    // Generate value noise (wood)
+    std::vector<Noise::Point> generatePhasor(int pairingFunction, int noiseType, int width, int height);
 };
 
 #endif

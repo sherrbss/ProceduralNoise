@@ -14,6 +14,7 @@ void main() {
     vec4 pos = projectionSB * viewSB * vec4(positionSB, 1.0);
     //vec4 pos = projectionSB * viewSB * vec4(positionSB.x, positionSB.y, positionSB.z, 1.0);
     gl_Position = pos.xyww;
+    //gl_Position = pos.xywz;
 
 
     // Use with glDepthFunc(GL_LEQUAL) then re-enable glDepthFunc(GL_LESS).

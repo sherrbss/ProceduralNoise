@@ -17,6 +17,9 @@
 #include "NoiseTypes/Wood.h"
 #include "NoiseTypes/PrimeGradient.h"
 #include "NoiseTypes/PrimeGradientDensity.h"
+#include "NoiseTypes/BetterGradient.h"
+#include "NoiseTypes/Wavelet.h"
+#include "NoiseTypes/Phasor.h"
 
 class Fractal {
 public:
@@ -65,12 +68,18 @@ private:
 	ExperimentalNoise *experimentalSource;
 	Splatter *valueSplatterSource;
 	Wood *valueWoodSource;
+	BetterGradient *betterGradientSource;
+	Wavelet *waveletSource;
+	Phasor *phasorSource;
 
 	int octaves; // Number of octaves (default is 8).
 	float lacunarity; // Frequency for each octave (default is 2.0).
 	float persistence; // Amplitude for each octave (default is 0.5).
 	float initFrequency; // Initial frequency (default of 1.0).
 	float initAmplitude; // Initial amplitude (default is 1.0)
+
+	float min;
+	float max;
 };
 
 #endif

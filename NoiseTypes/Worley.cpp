@@ -11,7 +11,7 @@ Worley::Worley() {
     srand(time(NULL));
 
     this->maxCells = 90;
-    this->numCells = 20;
+    this->numCells = 100;
     this->cellPoints = new glm::vec2[this->numCells];
 
     for (int i = 0; i < this->numCells; i++) {
@@ -167,8 +167,8 @@ float Worley::noise(float sample_x, float sample_y, float sample_z) {
         float mhd = mahalanobisDistance(st, cellPoints[i]);
 
         //float currDistance = mhd;
-        float currDistance = (cd + ed + md + mhd) / 4.0f;
-        //float currDistance = ed;
+        //float currDistance = (cd + ed + md + mhd) / 4.0f;
+        float currDistance = ed;
 
         if (currDistance < minDist) {
             thirdMinDist = secondMinDist;
@@ -224,7 +224,7 @@ float Worley::noise(float sample_x, float sample_y, float sample_z) {
     //return sqrt(st.x * st.x + st.y * st.y);
 
     // First closest point
-    //return sqrt(minDist);
+    return sqrt(minDist);
 
     // Second closest point
     //return sqrt(secondMinDist);
@@ -238,5 +238,5 @@ float Worley::noise(float sample_x, float sample_y, float sample_z) {
 
     // Average of three closest points
     //return (sqrt(minDist) + sqrt(secondMinDist) + sqrt(thirdMinDist)) / 3.0f;
-    return 1.0f - (sqrt(minDist) + sqrt(secondMinDist) + sqrt(thirdMinDist)) / 3.0f;
+    //return 1.0f - (sqrt(minDist) + sqrt(secondMinDist) + sqrt(thirdMinDist)) / 3.0f;
 }

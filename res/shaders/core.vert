@@ -13,9 +13,9 @@ uniform sampler2D noiseTexture;
 void main() {
 
     // Vase
-    /*float h = (texture(noiseTexture, uv).r + 1.0f) / 2.0f;
-    vec3 fragPos = vec3(position) + vec3(0.0f, h, 0.0f);
-    gl_Position = transform * (vec4(fragPos, 1.0f));*/
+    //float h = (texture(noiseTexture, uv).r + 1.0f) / 2.0f;
+    //vec3 fragPos = vec3(position) + vec3(0.0f, h, 0.0f);
+    //gl_Position = transform * (vec4(fragPos, 1.0f));
 
     // Basketball
     vec3 fragPos = vec3(position);

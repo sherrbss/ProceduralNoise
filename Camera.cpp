@@ -57,7 +57,7 @@ Camera::Camera() {
  */
 Camera::Camera(GLfloat screenWidth, GLfloat screenHeight, glm::vec3 cameraPosition, glm::vec3 cameraUp, GLfloat yaw, GLfloat pitch) {
 
-    int typeFlag = 0;
+    int typeFlag = 1;
     if (typeFlag == 0) {
         /// Imported Mesh
         this->cameraPosition = cameraPosition;
@@ -132,7 +132,7 @@ void Camera::updateModel(glm::vec3 translation, glm::vec3 rotation, glm::vec3 sc
 void Camera::updateView() {
 
 
-    int typeFlag = 0;
+    int typeFlag = 1;
     if (typeFlag == 0) {
         /// Imported Mesh
         glm::vec3 tempFront;

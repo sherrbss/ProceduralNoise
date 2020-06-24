@@ -31,7 +31,7 @@ Renderer::Renderer() {
     this->scaleStart = glm::vec3(1.0f, 1.0f, 1.0f);
 
     // Camera initial location
-    this->cameraPosition   = glm::vec3(0.0f, 0.0f,  3.0f);
+    this->cameraPosition   = glm::vec3(0.0f, 0.0f,  2.0f);
     this->cameraLookatOrigin   = glm::vec3(0.0f, 0.0f,  0.0f);
     this->cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
@@ -39,6 +39,9 @@ Renderer::Renderer() {
     this->fovFactor = 90.0f;
     this->rotateFactor = 0.0f;
     this->scaleFactor = 1.0f;
+
+    this->planetLocation = glm::vec3(0.5f, 2.0f, -0.5f);
+    this->planetScale = 0.1f;
 
     // Initial dimensions
     this->width = 1000;
@@ -83,6 +86,10 @@ Renderer::Renderer(int width, int height, int noiseType, int pairingFunction, in
         this->cameraPosition   = glm::vec3(0.0f, 0.0f,  1.0f);
         this->cameraLookatOrigin   = glm::vec3(0.0f, 0.0f,  0.0f);
         this->cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+
+        this->planetLocation = glm::vec3(0.5f, 2.0f, -0.5f);
+        this->planetScaleVec = glm::vec3(1.0f, 1.0f, 1.0f);
+        this->planetScale = 0.1f;
     }
 
     //this->textures = new GLuint[8];
@@ -159,6 +166,12 @@ std::string Renderer::generateFilenames(int filenameType) {
             title = "Primed_Gradient_Noise";
         } else if (this->noiseType == 8) {
             title = "Primed_Density_Noise";
+        } else if (this->noiseType == 9) {
+            title = "Better_Gradient_Noise";
+        } else if (this->noiseType == 10) {
+            title = "Wavelet_Noise";
+        } else if (this->noiseType == 11) {
+            title = "Phasor_Noise";
         } else {
             // TODO: Throw error
         }
@@ -184,7 +197,13 @@ std::string Renderer::generateFilenames(int filenameType) {
         } else if (this->noiseType == 7) {
             title = "Primed_Gradient";
         } else if (this->noiseType == 8) {
-            title = "Primed_Desnity";
+            title = "Primed_Density";
+        } else if (this->noiseType == 9) {
+            title = "Better_Gradient";
+        } else if (this->noiseType == 10) {
+            title = "Wavelet";
+        } else if (this->noiseType == 11) {
+            title = "Phasor";
         } else {
             // TODO: Throw error
         }
@@ -226,6 +245,46 @@ int Renderer::setupBuffersMesh() {
     // Setup EBO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->meshInstance.numIndices * sizeof(GLuint), this->meshInstance.indicesMesh, GL_STATIC_DRAW);
+
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *) 0 );
+    glEnableVertexAttribArray(0);
+
+    // Color/Normal attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    // Texture Coordinate attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+    glBindVertexArray(0);
+
+    return 0;
+}
+
+/*
+ * Sets up buffers for meshes loaded from file.
+ *
+ * Returns:
+ *      0 if succesfully completed. TODO: return -1 if failed
+ */
+int Renderer::setupBuffersMeshPlanet() {
+
+    // Generate buffers
+    glGenVertexArrays(1, &this->plVAO);
+    glGenBuffers(1, &this->plVBO);
+    glGenBuffers(1, &this->plEBO);
+
+    glBindVertexArray(this->plVAO);
+
+    // Setup VBO
+    glBindBuffer(GL_ARRAY_BUFFER, this->plVBO);
+    glBufferData(GL_ARRAY_BUFFER, this->meshInstance.numIndicesPlanet * 8 * sizeof(GLfloat), this->meshInstance.verticesMeshPlanet, GL_STATIC_DRAW);
+
+    // Setup EBO
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->plEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->meshInstance.numIndicesPlanet * sizeof(GLuint), this->meshInstance.indicesMeshPlanet, GL_STATIC_DRAW);
 
     // Position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *) 0 );
@@ -323,6 +382,10 @@ int Renderer::updateImguiText() {
         // TODO: Throw error
     }
 
+    if (this->noiseType == 1 || this->noiseType == 3 || this->noiseType == 7 || this->noiseType == 8 || this->noiseType == 9 || this->noiseType == 10 || this->noiseType == 11) {
+        imguiPairingFunction = "N/A";
+    }
+
     // Noise type
     if (this->noiseType == 0) {
         imguiNoiseType = "Noise Type: Perlin";
@@ -340,6 +403,14 @@ int Renderer::updateImguiText() {
         imguiNoiseType = "Noise Type: Perlin (wood)";
     } else if (this->noiseType == 7) {
         imguiNoiseType = "Noise Type: Primed Gradient";
+    } else if (this->noiseType == 8) {
+        imguiNoiseType = "Noise Type: Primed Density";
+    } else if (this->noiseType == 9) {
+        imguiNoiseType = "Noise Type: Better Gradient";
+    } else if (this->noiseType == 10) {
+        imguiNoiseType = "Noise Type: Wavelet";
+    } else if (this->noiseType == 11) {
+        imguiNoiseType = "Noise Type: Phasor";
     } else {
         // TODO: Throw error
     }
@@ -434,6 +505,7 @@ int Renderer::renderApplication() {
     std::string fileApp = Renderer::generateFilenames(1);
 
     /// ========================== GENERATE NOISE/RUN ANALYSIS/SAVE IMAGE ==========================
+    std::vector<Noise::Point> noiseVec;
     int generateNoise = 0;
     if (generateNoise == 0) {
         std::vector<Noise::Point> noise;
@@ -455,9 +527,18 @@ int Renderer::renderApplication() {
             noise = this->NoiseInstance->generatePrimedGradient(this->pairingFunction, this->noiseType, this->width, this->height);
         } else if (this->noiseType == 8) {
             noise = this->NoiseInstance->generatePrimedDensity(this->pairingFunction, this->noiseType, this->width, this->height);
+        } else if (this->noiseType == 9) {
+            noise = this->NoiseInstance->generateBetterGradient(this->pairingFunction, this->noiseType, this->width, this->height);
+        } else if (this->noiseType == 10) {
+            noise = this->NoiseInstance->generateWavelet(this->pairingFunction, this->noiseType, this->width, this->height);
+        } else if (this->noiseType == 11) {
+            noise = this->NoiseInstance->generatePhasor(this->pairingFunction, this->noiseType, this->width, this->height);
         } else {
             // TODO: Throw error
         }
+
+        /// FIXME
+        noiseVec = noise;
 
         // Save generated noise
         this->imageInstance->saveBMP(noise, this->saveImageFlag, this->width, this->height, fileNoise);
@@ -467,9 +548,10 @@ int Renderer::renderApplication() {
         int primeDistributionFlag = 0;
         if (primeDistributionFlag == 1) {
             PrimePlot *primePlotInstance;
-            primePlotInstance->generatePrimePlot();
-            primePlotInstance->generateUnitCircle();
+            //primePlotInstance->generatePrimePlot();
+            //primePlotInstance->generateUnitCircle();
             primePlotInstance->generateGradientSVG();
+            primePlotInstance->generateGradientSVGCube();
             delete primePlotInstance;
         }
 
@@ -551,6 +633,7 @@ int Renderer::renderApplication() {
     Shader noiseShader("../res/shaders/core.vert", "../res/shaders/core.frag");
     Shader terrainShader("../res/shaders/terrain.vert", "../res/shaders/terrain.frag");
     Shader skyboxShader("../res/shaders/skybox.vert", "../res/shaders/skybox.frag");
+    Shader planetShader("../res/shaders/planet.vert", "../res/shaders/planet.frag");
 
     printf("\nStarting texture generation.");
 
@@ -605,12 +688,23 @@ int Renderer::renderApplication() {
         terrainShader.bind();
 
         const char* uniformTerrain[6] = {"grass", "rock", "sand", "snow", "water", "lunar"};
-        const std::string filenameTerrain[] = {"../res/textures/grass.png", "../res/textures/rock.png",
+
+        // Earth
+        /*const std::string filenameTerrain[] = {"../res/textures/grass.png", "../res/textures/rock.png",
                                                "../res/textures/sand.png", "../res/textures/snow.png",
-                                               "../res/textures/water.png", "../res/textures/lunar.png"};
+                                               "../res/textures/water.png", "../res/textures/8k_mercury.jpg"};*/
+
+        /*const std::string filenameTerrain[] = {"../res/textures/8k_mercury.jpg", "../res/textures/8k_mercury.jpg",
+                                               "../res/textures/8k_mercury.jpg", "../res/textures/snow.png",
+                                               "../res/textures/water.png", "../res/textures/2k_earth_daymap.jpg"};*/
+
+        // Lunar
+        const std::string filenameTerrain[] = {"../res/textures/8k_mercury.jpg", "../res/textures/8k_mercury.jpg",
+                                               "../res/textures/8k_mercury.jpg", "../res/textures/8k_mercury.jpg",
+                                               "../res/textures/water.png", "../res/textures/8k_mars.jpg"};
 
         // Load terrain textures from file
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 5; i++) {
 
             int tempIndex = i + 1;
 
@@ -636,6 +730,27 @@ int Renderer::renderApplication() {
 
         printf("    Successfully completed terrain texture generation.\n");
 
+
+        /// Planet shader and texture setup
+        // Noise shader and texture setup
+        planetShader.bind();
+
+        // Activate texture and bind current texture
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, this->textures[6]);
+
+        this->textureInstance.generateTerrainTexture(5, filenameTerrain[5]);
+
+        // Set uniform
+        glUniform1i(glGetUniformLocation(planetShader.Program, "planetTexture"), 6);
+
+        // Unbind texture and shader
+        glBindTexture(GL_TEXTURE_2D, 0);
+        planetShader.unbind();
+
+        printf("    Successfully completed planet texture generation.\n");
+
+
         /// Skybox shader and texture setup
         printf("\n    Starting skybox texture generation.");
         skyboxShader.bind();
@@ -645,9 +760,14 @@ int Renderer::renderApplication() {
                                               "../res/textures/miramar_dn.png", "../res/textures/miramar_up.png",
                                               "../res/textures/miramar_rt.png", "../res/textures/miramar_lf.png"
         };*/
-        const std::string filenameSkybox[] = {"../res/textures/miramar_ft.png", "../res/textures/miramar_bk.png",
+        /*const std::string filenameSkybox[] = {"../res/textures/miramar_ft.png", "../res/textures/miramar_bk.png",
                                               "../res/textures/miramar_up.png", "../res/textures/miramar_dn.png",
                                               "../res/textures/miramar_rt.png", "../res/textures/miramar_lf.png"
+        };*/
+
+        const std::string filenameSkybox[] = {"../res/textures/space_ft.png", "../res/textures/space_bk.png",
+                                              "../res/textures/space_dn.png", "../res/textures/space_up.png",
+                                              "../res/textures/space_rt.png", "../res/textures/space_lf.png"
         };
 
         // Bind current texture
@@ -681,7 +801,8 @@ int Renderer::renderApplication() {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        this->meshInstance.generateMeshFromFile();
+        //this->meshInstance.generateMeshFromFile();
+        this->meshInstance.generateMeshFromNoise(this->width, this->height, noiseVec); /// FIXME
 
         this->translationStart = glm::vec3(0.000f, 0.000f, 0.000f);
         this->rotationStart = glm::vec3(0.000f, 1.000f, 0.000f);
@@ -701,8 +822,9 @@ int Renderer::renderApplication() {
         Renderer::setupBuffersMesh();
 
     } else if (this->applicationType == 1) {        // Procedural Landscape
-        this->meshInstance.generateMeshFromNoise(this->width, this->height);
+        this->meshInstance.generateMeshFromNoise(this->width, this->height, noiseVec); /// FIXME
         this->meshInstance.generateSkybox();
+        this->meshInstance.generatePlanet();
 
         /*/// TODO: move
         this->translationStart = glm::vec3(4.615f, 0.000f, 0.000f);
@@ -719,9 +841,21 @@ int Renderer::renderApplication() {
         this->rotateFactor = 20.769f;
         this->scaleFactor = 2.0f;*/
 
+        // Camera initial location
+        this->cameraPosition   = glm::vec3(0.0f, 0.0f,  1.0f);
+        this->cameraLookatOrigin   = glm::vec3(0.0f, 0.0f,  0.0f);
+        this->cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+
+        // Initial factors
+        this->fovFactor = 90.0f;
+        this->rotateFactor = 0.0f;
+        this->scaleFactor = 1.0f;
+
         // Setup buffers
         Renderer::setupBuffersMesh();
         Renderer::setupBuffersMeshSkybox();
+        Renderer::setupBuffersMeshPlanet();
+
 
     } else {
         // TODO: throw error
@@ -758,7 +892,8 @@ int Renderer::renderApplication() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+        //glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (this->applicationType == 0) {
@@ -807,44 +942,8 @@ int Renderer::renderApplication() {
             camera.updateProjection(fbWidthNew, fbHeightNew);
             glm::mat4 projection = camera.getProjection();
 
-            /// Skybox
-            // Activate shader
-            glDepthFunc(GL_LEQUAL);
-            skyboxShader.bind();
-
-            // Calculate transform
-            glm::mat4 modelS = glm::mat4(1.0f);
-            //modelS = glm::translate(modelS, this->cameraPosition);
-            //modelS = glm::rotate(modelS, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-            modelS = glm::scale(modelS, glm::vec3(5.0f, 5.0f, 5.0f));
-
-            // Calculate view
             camera.updateCameraPosition(this->cameraPosition);
             camera.updateCameraDirection(this->cameraLookatOrigin);
-            glm::mat4 viewS = glm::mat4(1.0f);
-            viewS = glm::mat4(glm::mat3(camera.getView()));
-            viewS = viewS * modelS;
-
-            glEnable(GL_DEPTH_TEST);
-
-            GLint viewSB = glGetUniformLocation(skyboxShader.Program, "viewSB");
-            glUniformMatrix4fv(viewSB, 1, GL_FALSE, glm::value_ptr(viewS));
-
-            GLint projectionSB = glGetUniformLocation(skyboxShader.Program, "projectionSB");
-            glUniformMatrix4fv(projectionSB, 1, GL_FALSE, glm::value_ptr(projection));
-
-            glBindVertexArray(this->sbVAO);
-            //glBindBuffer(GL_ARRAY_BUFFER, this->sbVBO);
-
-            // Bind skybox texture
-            glActiveTexture(GL_TEXTURE7);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, this->textures[7]);
-
-            //glUniform1i(glGetUniformLocation(skyboxShader.Program, "skybox"), 7);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-            glBindVertexArray(0);
-            skyboxShader.unbind();
-            glDepthFunc(GL_LESS);
 
             /// Terrain
             // Activate shader
@@ -875,8 +974,8 @@ int Renderer::renderApplication() {
             glBindTexture(GL_TEXTURE_2D, this->textures[5]);
 
             // Bind Lunar
-            glActiveTexture(GL_TEXTURE6);
-            glBindTexture(GL_TEXTURE_2D, this->textures[6]);
+            /*glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D, this->textures[6]);*/
 
             // View
             camera.updateCameraPosition(this->cameraPosition);
@@ -936,6 +1035,71 @@ int Renderer::renderApplication() {
 
             terrainShader.unbind();
 
+            /// Planet
+            planetShader.bind();
+            glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D, this->textures[6]);
+
+            // View
+            view = camera.getView();
+
+            // Model
+            //float scaleOffset = 0.1f;
+            //glm::vec3 translationOffset = glm::vec3(-1.5f, 2.5f, 1.0f);
+            camera.updateModel(this->translationStart + this->planetLocation, this->rotationStart, this->planetScaleVec * this->planetScale, this->rotateFactor);
+            model = glm::mat4(1.0f);
+            model = camera.getModel();
+
+            // Aggregate MVP matrices into single transform matrix
+            transform = projection * view * model;
+
+            // Get matrix's uniform location and set matrix
+            transformLocation = glGetUniformLocation(planetShader.Program, "transform");
+            glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
+
+            // Draw container
+            glBindVertexArray(this->plVAO);
+            glDrawElements(GL_TRIANGLES, this->meshInstance.numIndicesPlanet, GL_UNSIGNED_INT, 0);
+            glBindVertexArray(0);
+
+            planetShader.unbind();
+
+            /// Skybox
+            // Activate shader
+            glDepthFunc(GL_LEQUAL);
+            skyboxShader.bind();
+
+            // Calculate transform
+            glm::mat4 modelS = glm::mat4(1.0f);
+            //modelS = glm::translate(modelS, glm::vec3(-0.5f, 0.0f, 0.0f));
+            //modelS = glm::rotate(modelS, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+            modelS = glm::scale(modelS, glm::vec3(5.0f, 5.0f, 5.0f));
+
+            // Calculate view
+            glm::mat4 viewS = glm::mat4(1.0f);
+            viewS = glm::mat4(glm::mat3(camera.getView()));
+            viewS = viewS * modelS;
+
+            glEnable(GL_DEPTH_TEST);
+
+            GLint viewSB = glGetUniformLocation(skyboxShader.Program, "viewSB");
+            glUniformMatrix4fv(viewSB, 1, GL_FALSE, glm::value_ptr(viewS));
+
+            GLint projectionSB = glGetUniformLocation(skyboxShader.Program, "projectionSB");
+            glUniformMatrix4fv(projectionSB, 1, GL_FALSE, glm::value_ptr(projection));
+
+            glBindVertexArray(this->sbVAO);
+            //glBindBuffer(GL_ARRAY_BUFFER, this->sbVBO);
+
+            // Bind skybox texture
+            glActiveTexture(GL_TEXTURE7);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, this->textures[7]);
+
+            //glUniform1i(glGetUniformLocation(skyboxShader.Program, "skybox"), 7);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glBindVertexArray(0);
+            skyboxShader.unbind();
+            glDepthFunc(GL_LESS);
         } else {
             // TODO: throw error
         }
@@ -1032,6 +1196,13 @@ int Renderer::renderApplication() {
                 ImGui::SliderFloat("Field of View", &this->fovFactor, 1.000f, 180.000f);
                 ImGui::NewLine();
 
+                // Planet Position
+                ImGui::Text("Planet Location: ");
+                ImGui::SliderFloat("Planet Position X", &this->planetLocation[0], -50.000f, 50.000f);
+                ImGui::SliderFloat("Planet Position Y", &this->planetLocation[1], -50.000f, 50.000f);
+                ImGui::SliderFloat("Planet Position Z", &this->planetLocation[2], -50.000f, 50.000f);
+                ImGui::SliderFloat("Planet Scale", &this->planetScale, 0.000f, 2.000f);
+
                 // Framerate
                 ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate,
                             ImGui::GetIO().Framerate);
@@ -1062,6 +1233,9 @@ int Renderer::renderApplication() {
     glDeleteVertexArrays(1, &this->sbVAO);
     glDeleteBuffers(1, &this->sbVBO);
     glDeleteBuffers(1, &this->sbEBO);
+    glDeleteVertexArrays(1, &this->plVAO);
+    glDeleteBuffers(1, &this->plVBO);
+    glDeleteBuffers(1, &this->plEBO);
 
     glfwTerminate();
     return 0;
